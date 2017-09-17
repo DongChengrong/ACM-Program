@@ -16,6 +16,7 @@ int main()
         gets(G[0]);
         if(G[0][0] == 'Z') break;
 
+        //分离案例
         if(T++) printf("\n");
 
         for(int i = 1; i < 5; i++)
