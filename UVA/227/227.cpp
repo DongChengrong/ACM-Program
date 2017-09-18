@@ -1,79 +1,71 @@
-#include<cstdio>
-#include<cstring>
+#include<stdio.h>
+#include<string.h>
+#include<algorithm>
 using namespace std;
 
-const int maxn=7;
+const int maxn = 5 + 10;
+const char S[] = "ABLR";
+const int dir[4][2] = { {-1, 0}, {1, 0},{0, -1},{0, 1} };
 char G[maxn][maxn];
-char order[100];
-int over,x,y,ok,have;
-
-void move(char c)
-{
-    switch (c)
-    {
-        case 'A':
-            {
-                if(x-1<0){ over=1; break; }
-                G[x][y]=G[x-1][y];
-                G[x-1][y]=' ';
-                x=x-1; break;
-            }
-        case 'B':
-            {
-                if(x+1>=5){ over=1; break; }
-                G[x][y]=G[x+1][y];
-                G[x+1][y]=' ';
-                x=x+1; break;
-            }
-        case 'L':
-            {
-                if(y-1<0){ over=1; break; }
-                G[x][y]=G[x][y-1];
-                G[x][y-1]=' ';
-                y=y-1; break;
-            }
-        case 'R':
-            {
-                if(y+1>=5){ over=1; break; }
-                G[x][y]=G[x][y+1];
-                G[x][y+1]=' ';
-                y=y+1; break;
-            }
-        default :
-            {
-                over=1;
-                break;
-            }
-    }
-}
-
-void locate()
-{
-    for(int i=0;i<5;i++)
-            for(int j=0;j<5;j++)
-            if(G[i][j]==' ') {  x=i; y=j; break; }
-}
 
 int main()
 {
-    int have=0,T=1;
+    int T = 0;
     while(1)
     {
-        for(int i=0;i<5;i++) {gets(G[i]); fflush(stdin); if(G[i][0]=='Z') return 0;}
-        if(have) printf("\n");
-        locate();
-        over=0; char c;
-        while((c=getchar()) && c!='0')
+        gets(G[0]);
+        if(G[0][0] == 'Z') break;
+
+        //分离案例
+        if(T++) printf("\n");
+
+        for(int i = 1; i < 5; i++)
+            gets(G[i]);
+
+        //寻找空格
+        int x0,y0;
+        for(int i = 0; i <5; i++)
+            for(int j = 0; j < 5; j++)
+                if(G[i][j] == ' ')
+                {
+                    x0 = i; y0 = j;
+                    break;
+                }
+
+        //进行移动
+        int ok = 1;
+        char c;
+        while((c = getchar()) && c != '0')
         {
-            if(c=='\n') continue;
-            if(over) continue;
-            move(c);
+            int k;
+            if(!ok) continue;
+            if(c == '\n') continue;
+            if(strchr(S,c) == NULL) { ok = 0; continue; }
+
+            else k = strchr(S,c) - S;
+            int x = x0 + dir[k][0];
+            int y = y0 + dir[k][1];
+            if(x < 0 || x > 4 || y < 0 || y > 4)
+            {
+                ok = 0; continue;
+            }
+            else
+            {
+                swap(G[x][y], G[x0][y0]);
+                x0 = x, y0 = y;
+            }
         }
+
         getchar();
-        printf("Puzzle #%d:\n",T++);
-        if(!over) for(int i=0;i<5;i++) printf("%c %c %c %c %c\n",G[i][0],G[i][1],G[i][2],G[i][3],G[i][4]);
+
+        //打印解
+        printf("Puzzle #%d:\n",T);
+
+        if(ok)
+            for(int i=0;i<5;i++)
+                printf("%c %c %c %c %c\n",G[i][0],G[i][1],G[i][2],G[i][3],G[i][4]);
+
         else printf("This puzzle has no final configuration.\n");
-        have=1;
     }
     return 0;
 }
