@@ -15,6 +15,7 @@ int main()
     {
         scanf("%s%s",s1 + 1,s2 + 1);
         memset(d,0,sizeof(d));
+        printf("%d\n",d[0][0]);
 
         int n = strlen(s1 + 1);
         int m = strlen(s2 + 1);

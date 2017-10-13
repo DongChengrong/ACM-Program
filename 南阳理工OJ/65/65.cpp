@@ -1,3 +1,7 @@
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> 38aa1bf89f72aaacd422b91c01cd8f65bce88772
 #include<stdio.h>
 
 const int maxn = 20 + 5;
@@ -31,4 +35,8 @@ int main()
         printf("%d\n",sum);
     }
     return 0;
+<<<<<<< HEAD
 }
+=======
+}        
+>>>>>>> 38aa1bf89f72aaacd422b91c01cd8f65bce88772
