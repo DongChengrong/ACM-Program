@@ -46,6 +46,6 @@ int main()
             dp[i] += 1;
         }
 
-        printf("%.3lf\n",dp[n+1]);
+        printf("%.3lf\n",dp[n + 1]);
     }
 }
