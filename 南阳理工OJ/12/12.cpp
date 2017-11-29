@@ -1,20 +1,37 @@
 #include<stdio.h>
-#include<string.h>
+#include<math.h>
 #include<algorithm>
 using namespace std;
 
-const int maxn = 100000 + 10;
-int vis[maxn];
+const int maxn = 10000 + 10;
 
-struct Node
-{
-    int x,r;
-}u[maxn];
+int w,h,n;
 
-int cmp(Node u1, Node u2)
+struct Dev
 {
-    return u1.r < u2.r;
-}
+    int p,r;   //p代表坐标，r代表半径
+    double start, end;
+    Dev(){}
+    Dev(int p,int r)
+    {
+        this->p = p;
+        this->r = r;
+        if(2 * r < h)   //此类喷水装置无用
+        {
+            this->start = this->end = -1;
+            return;
+        }
+        double x = sqrt(pow(r,2) - pow((double)h / 2,2));
+        this->start = (double)p - x < 0 ? 0 : (double)p - x;
+        this->end = (double)p + x > w ? w : (double)p + x;
+    }
+
+    bool operator < (const Dev &a) const
+    {
+        return this->start < a.start;
+    }
+
+}D[maxn];
 
 int main()
 {
@@ -22,50 +39,47 @@ int main()
     scanf("%d",&T);
     while(T--)
     {
-        int n,w,h;
-        scanf("%d %d %d",&n,&w,&h);
-        for(int i =1; i <= n; i++)
-            scanf("%d %d",&u[i].x,&u[i].r);
-
-        memset(vis,0,sizeof(vis));
-        sort(u+1, u + 1 + n,cmp);
-
-        int ans = 0;
-        for(int i =1; i <= n; i++)
+        scanf("%d%d%d",&n,&w,&h);
+        for(int i = 0; i < n; i++)
         {
-            //左右边界
-            int r,l;
-            l = u[i].x - u[i].r;
-            r = u[i].x + u[i].r;
-            if(l < 0) l = 0;
-            if(r > w) r = w;
+            int p,r;
+            scanf("%d%d",&p,&r);
+            D[i] = Dev(p,r);
+        }
 
-            //判断是否需要安装喷水器
-            int yes = 0;
-            for(int j = l; j <= r; j++)
-                if(!vis[j])
-                    {yes = 1; break;}
+        //将喷水装置按着起点位置从小到达排序
+        sort(D, D + n);
 
-            //根据情况进行实际操作
-            if(yes)
+        int count = 0;
+        bool ok = true;
+        double start = 0,end = 0;
+        for(int i = 0; i < n; i++)
+        {
+            if(D[i].start == -1) continue;  //选择的喷水装置无用
+            if(end < D[i].start) break;
+            if(end == w) break;
+
+            if(D[i].start <= start)
+                end = max(end,D[i].end);
+            else
             {
-                if(r * 2 < h) continue;
-                else
+                start = end;
+                if(D[i].start <= start)
                 {
-                    ans++;
-                    for(int j = l; j <= r; j++)
-                        vis[j] = 1;
+                    end = max(end,D[i].end);
+                    count++;
                 }
+                else
+                    break;
             }
         }
 
-        //检查是否完全覆盖
-        int ok = 1;
-        for(int i = 0; i <= w; i++)
-            if(!vis[i]) { ok = 0; break; }
+        count++;
+        if(end != w) ok = false;
 
-        if(ok) printf("%d\n",ans);
+        if(ok) printf("%d\n",count);
         else printf("0\n");
+
     }
     return 0;
 }
