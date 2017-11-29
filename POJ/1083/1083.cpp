@@ -1,49 +1,30 @@
 #include<cstdio>
+#include<cstring>
 #include<algorithm>
 using namespace std;
-struct node
+int A[200];
+void save(int p,int q)
 {
-    int x;
-    int y;
-}A[200];
-int cmp(struct node a,struct node b)
-{
-    return a.x<b.x;
-}
-void save(int x,int y,int i)
-{
-    if(x>y)
-    {
-        A[i].x=y;
-        A[i].y=x;
-    }
-    else
-    {
-        A[i].x=x;
-        A[i].y=y;
-    }
+    for(int i=(p+1)/2;i<=(q+1)/2;i++)
+        A[i]+=10;
 }
 int main()
 {
-    int t,n;
+    int t,n,p,q,s,e;
     scanf("%d",&t);
     while(t--)
     {
-        int x,y;
+        memset(A,0,sizeof(A));
         scanf("%d",&n);
-        for(int i=0;i<n;i++)
+        while(n--)
         {
-            scanf("%d%d",&x,&y);
-            save(x,y,i);
+            scanf("%d %d",&p,&q);
+            s=p<q?p:q;
+            e=p>q?p:q;
+            save(s,e);
         }
-        sort(A,A+n-1,cmp);
-        int j=1;
-        for(int i=0;i<n-1;i++)
-        {
-           if(A[i+1].x%2) if(A[i].y>=A[i+1].x) j++;
-           if(!(A[i+1].x%2)) if(A[i].y+1>=A[i+1].x) j++;
-        }
-        printf("%d\n",j*10);
+        sort(A,A+200);
+        printf("%d\n",A[199]);
     }
     return 0;
 }
