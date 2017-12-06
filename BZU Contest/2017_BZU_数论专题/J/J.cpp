@@ -1,35 +1,36 @@
 #include<stdio.h>
 #include<math.h>
+#include<string.h>
 #include<iostream>
 using namespace std;
 
 typedef long long LL;
-const int maxn = 40000000;
-int prime[maxn],a[maxn + 10];
-
-int is_prime(LL n)
-{
-    if(n <= 1) return 0;
-    LL m = floor(sqrt(n) + 0.5);
-    for(LL i = 2; i <= m; i++)
-        if(n % i == 0) return 0;
-    return 1;
-}
+const int maxn = 1500000;
+int prime[maxn + maxn],tmp[maxn],a[maxn + 10];
 
 void init()
 {
-    LL cnt = 1;
-    for(LL i = 1; i <= maxn; i++)
+    int cnt = 1;
+    a[1] = 0, a[2] = 1;
+    for(LL i = 3; i <= maxn; i++)
     {
-        prime[i] = is_prime(i);
-        if(!prime[i]) a[i] = 0;
-        else
+        if(i % 2 ) a[i] = 1;
+        else a[i] = 0;
+    }
+    for(int i = 3; i <= sqrt(maxn); i++)
+    {
+        if(a[i])
         {
-            a[i] = prime[cnt];
-            if(prime[i] && i >= 1000000)
-            cnt++;
+            for(LL j = i * 2; j <= maxn; j += i)
+                a[j] = 0;
         }
     }
+    LL num = 1;
+    for(LL i = 1; i <= maxn; i++)
+        if(a[i]) tmp[num++] = i;
+    memset(prime,0,sizeof(prime));
+    for(LL i = 1; i < num; i++)
+        if(a[i]) prime[tmp[i]] = 1;
 }
 
 int main()
@@ -39,7 +40,7 @@ int main()
     while(scanf("%d",&n) == 1)
     {
         for(LL i = n; ; i++)
-            if(a[i])
+            if(prime[i])
             {
                 printf("%lld\n",i);
                 break;
