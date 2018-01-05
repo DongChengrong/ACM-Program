@@ -1,63 +1,48 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-  char name[80][12],tp1[12];
-  int num[80],tp2;
-  double score[80],tp3;
-void Sort(int n)
+#include<string.h>
+#include<algorithm>
+#include<vector>
+#include<string.h>
+using namespace std;
+
+const int maxn = 100000 + 10;
+vector<int> G[maxn];
+int in[maxn],sz[maxn],be[maxn],ed[maxn];
+int n,ans;
+
+void read_tree()
 {
-    int i,j,max;
-    for(i=1;i<n;i++)
-    {   max=i;
-        for(j=i+1;j<=n;j++)
-        {
-            if(score[max]<score[j])
-            {
-                max=j;
-            }
-        }
-       strcpy(tp1,name[max]) ;
-        strcpy(name[max],name[i]);
-       strcpy( name[i],tp1);
-        tp2=num[max];
-        num[max]=num[i];
-        num[i]=tp2;
-        tp3=score[max];
-        score[max]=score[i];
-        score[i]=tp3;
+    memset(in,0,sizeof(in));
+    scanf("%d",&n);
+    for(int i = 1; i < n; i++)
+    {
+        int u,v;
+        scanf("%d %d",&u,&v);
+        G[u].push_back(v);
+        in[v] = 1;
     }
-
 }
+
+void dfs(int u)
+{
+    sz[u] = 1; be[u] = u; ed[u] = u;
+    for(int i = 0; i < G[u].size(); i++)
+    {
+        int v = G[u][i];
+        dfs(v);
+        be[u] = min(be[u],be[v]);
+        ed[u] = max(ed[u],ed[v]);
+        sz[u] += sz[v];
+    }
+    if(ed[u] - be[u] + 1 == sz[u]) ans++;
+}
+
 int main()
-{   int i=0,j;
-    FILE *fp;
-    if((fp=fopen("test.txt","r+"))==NULL)
-    {
-        printf("Can't find this file");
-        exit(0);
-    }
-    fseek(fp,0L,SEEK_SET);
-    while(feof(fp)==0)
-    {
-        i++;
-        fscanf(fp,"%s",name[i]);
-        fscanf(fp,"%d",&num[i]);
-        fscanf(fp,"%lf",&score[i]);
-        if(i==1 || i==4 || i==6)
-        {
-            printf("%-10s\t%d\t%.2lf\n",name[i],num[i],score[i]);
-        }
-    }
-    Sort(i);
-    for(j=1;j<=i;j++)
-    {
-      printf("%-10s\t%d\t%.2lf\n",name[j],num[j],score[j]);
-    }
-
-
-    // printf("%d",);
-
-
-
+{
+    read_tree();
+    ans = 0;
+    for(int i = 1; i <= n; i++)
+        if(!in[i]) { dfs(i); break; }
+    printf("%d\n",ans);
     return 0;
 }
