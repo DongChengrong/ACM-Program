@@ -1,57 +1,50 @@
-#include<stdio.h>
-#include<string.h>
-#include<algorithm>
+/*
+典型的区间调度问题
+*/
+
+#include <stdio.h>
+#include <algorithm>
 using namespace std;
 
-const int maxn = 100 + 10;
-char s[30];
+#define N 110
 
-struct Node
-{
-    int l,r;
-}u[maxn];
+struct Node {
+    int s, t;
+};
 
-int cmp(Node u1, Node u2)
-{
-    if(u1.l != u2.l) return u1.l < u2.l;
-    else return u1.r < u2.r;
+Node a[N];
+
+bool cmp(Node a, Node b) {
+    return a.t < b.t;
 }
 
-Node convert_time_to_node(char *s)
-{
-    Node u;
-    int a = ((s[0] - '0') * 10 + s[1] - '0') * 60;
-    a += (s[3] - '0') * 10 + s[4] - '0';
-    int b = ((s[6] - '0') * 10 + s[7] - '0') * 60;
-    b += (s[9] - '0') * 10 + s[10] - '0';
-    u.l = min(a,b); u.r = max(a,b);
-    return u;
-}
-
-int main()
-{
+int main() {
     int n;
-    while(scanf("%d",&n) == 1)
-    {
-        for(int i = 0; i < n; i++)
-        {
-            scanf("%s",s);
-            u[i] = convert_time_to_node(s);
+    while (scanf("%d",&n) == 1) {
+
+        for (int i = 0; i < n; ++i) {
+            int h1,h2,m2,m1;
+            scanf("%d:%d-%d:%d",&h1,&m1,&h2,&m2);
+            int x = h1 * 60 + m1;
+            int y = h2 * 60 + m2;
+            a[i].s = min(x,y);
+            a[i].t = max(x,y);
+            //printf("%d %d\n",a[i].s,a[i].t);
         }
 
-        sort(u,u + n,cmp);
+        sort(a,a+n, cmp);
 
-        int ans = 1, i = 1, cur = u[0].r;
-        while(i < n)
-        {
-            if(u[i].r < cur) cur = u[i].r;
-            else if(u[i].l > cur)
-            {
-                cur = u[i].l; ans++;
+        int ans = 1;
+        int t = a[0].t;
+
+        for (int i = 1; i < n; ++i) {
+            if (t < a[i].s) {
+                ++ans; t = a[i].t;
             }
-            i++;
         }
+
         printf("%d\n",ans);
+
     }
     return 0;
 }

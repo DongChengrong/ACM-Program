@@ -4,34 +4,45 @@
 using namespace std;
 
 #define INF 0x3f3f3f3f
-#define N 100
+#define N 2100
 
+char s[N][N];
 int G[N][N];
 int d[N], vis[N];
 
-int main() {
-    int n,m;
-    while (scanf("%d",&n) == 1 && n) {
+int dis(int i, int j) {
+    int num = 0;
+    for (int k = 0; k < 7; ++k) {
+        if (s[i][k] != s[j][k]) num++;
+    }
+    return num;
+}
 
-        scanf("%d",&m);
+int main() {
+    int n;
+    while (scanf("%d",&n) == 1 && n) {
 
         int cost = 0;
         memset(G, INF, sizeof(G));
         memset(d, INF, sizeof(d));
         memset(vis, 0, sizeof(vis));
 
-        while (m--) {
-            int u,v,w;
-            scanf("%d%d%d",&u,&v,&w);
-            G[u][v] = G[v][u] = min(G[u][v], w);
+        for (int i = 0; i < n; ++i) {
+            scanf("%s",s[i]);
         }
 
-        d[1] = 0;
+        for (int i = 0; i < n; ++i) {
+            for (int j = 0; j < n; ++j) {
+                G[i][j] = G[j][i] = dis(i, j);
+            }
+        }
+
+        d[0] = 0;
         while (1) {
 
             int v = -1;
 
-            for (int i = 1; i <= n; ++i) {
+            for (int i = 0; i < n; ++i) {
                 if( !vis[i] && (v == -1 || d[v] > d[i]) ) {
                     v = i;
                 }
@@ -39,20 +50,18 @@ int main() {
 
             if (v == -1) break;
 
-            //printf("%d %d\n",v,d[v]);
 
             cost += d[v];
             vis[v] = 1;
 
-            for (int i = 1; i <= n; ++i) {   //鏇存柊鑺辫垂
+            for (int i = 0; i < n; ++i) {   //更新花费
                 if (d[i] > G[v][i]) {
                     d[i] = G[v][i];
                 }
             }
         }
 
-        printf("%d\n",cost);
+        printf("The highest possible quality is 1/%d.\n",cost);
     }
     return 0;
 }
-
