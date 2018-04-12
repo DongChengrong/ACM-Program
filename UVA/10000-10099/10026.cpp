@@ -11,7 +11,7 @@ using namespace std;
 
 struct Node {
     int s,t,id;
-    bool operator < ( const Node &a) {
+    bool operator < (const Node &a) const {
         if (t * a.s != a.t * s)
             return  t * a.s < s * a.t;
         else
