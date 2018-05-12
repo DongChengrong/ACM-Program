@@ -1,65 +1,67 @@
-#include<cstdio>
-#include<iostream>
-#include<set>
-#include<map>
-#include<vector>
-using namespace std;
+#include <stdio.h>
+#include <string.h>
 
-vector<int> v;
-map<string,int> m1;
-map<int,int> m2;
-int key,ans;
+#define N 260000  * 2
 
-void addNeed(int a)
-{
-    v.push_back(a);
+char s1[30], s2[30];
+int pa[N], d[N];
+
+int findset(int x) {
+    return pa[x] == x ? x : pa[x] = findset(pa[x]);
 }
 
-int ID(string s)
-{
-    if(m1.count(s)) return m1[s];
-    else { m1[s]=ans++;  return ans-1;}
-}
+struct Trie {
+    int sz, cnt;
+    int ch[N][30];
+    int val[N];
 
-bool removeNeed()
-{
-    int a;
-    for(int i=0;i<v.size();i++)
-    {
-        a=v[i];
-        if(m2.count(a)<=1) return false;
-        m2[a]-=2;
+    void init() {
+        sz = 1; cnt = 0;
+        memset(val, 0, sizeof(val));
+        memset(ch, 0, sizeof(ch));
     }
-    return true;
-}
 
-bool judge()
-{
-    for(map<int,int>:: iterator it=m2.begin();it!=m2.end();it++)
-        if(it->second%2) key++;
-    if(key>2) return false;
-    return true;
-}
+    int id(char c) { return c - 'a'; }
 
-int main()
-{
-    string s1,s2;
-    key=0; ans=1;
-    while(cin>>s1>>s2)
-    {
-        int a,b;
-        a=ID(s1); b=ID(s2);
-        if(a==b) addNeed(a);
-        else
-        {
-            if(!m2.count(a)) m2[a]=1;
-            else m2[a]++;
-            if(!m2.count(b)) m2[b]=1;
-            else m2[b]++;
+    int insert(char s[]) {
+        int u = 0;
+        int n = strlen(s);
+        for (int i = 0; i < n; ++i) {
+            int v = id(s[i]);
+            if (!ch[u][v]) ch[u][v] = sz++;
+            u = ch[u][v];
         }
+        if (!val[u]) val[u] = ++cnt;
+        return val[u];
     }
-    if(!removeNeed()) printf("Impossible\n");
-    if(judge()) printf("Possible\n");
-    else printf("Impossible\n");
-    return 1;
+}ma;
+
+void init() {
+    ma.init();
+    for (int i = 0; i < N; ++i) pa[i] = i;
+    memset(d, 0, sizeof(d));
+}
+
+int main() {
+    init();
+    while (scanf("%s%s",s1,s2) == 2) {
+        int u = ma.insert(s1);
+        int v = ma.insert(s2);
+        d[u]++; d[v]++;
+        pa[findset(u)] = pa[findset(v)];
+    }
+
+    int ans = 0;
+    int std = findset(1);
+
+    for (int i = 1; i <=ma.cnt; ++i) {
+        if (findset(i) != std) { puts("Impossible"); return 0; }
+        if (ans > 2) break;
+        if (d[i] & 1) ans++;
+    }
+
+    if (ans == 0 || ans == 2) puts("Possible");
+    else puts("Impossible");
+
+    return 0;
 }

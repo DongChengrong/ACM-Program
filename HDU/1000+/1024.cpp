@@ -1,34 +1,36 @@
-#include<stdio.h>
-#include<string.h>
 #include<iostream>
-#include<algorithm>
+#include<string.h>
+#include<stdio.h>
 using namespace std;
-
-const int maxn = 1000000 + 10;
-int a[maxn],dp[maxn],Maxs[maxn];
-
+int a[1000001],dp[1000001],max1[1000001];
+int max(int x,int y)
+{
+    return x>y?x:y;
+}
 int main()
 {
-    int n,m;
-    while(scanf("%d%d",&m,&n) == 2)
+    int i,j,n,m,temp;
+    while(scanf("%d%d",&m,&n)!=EOF)
     {
-        for(int i = 1; i <= n; i++)
-            scanf("%d",&a[i]);
-
-        int Max;
-        memset(dp,0,sizeof(dp));
-        memset(Maxs,0,sizeof(Maxs));
-        for(int i = 1; i <= m; i++)
+        for(i=1;i<=n;i++)
         {
-            Max = INT_MIN;
-            for(int j = i; j <= n; j++)
+            scanf("%d",&a[i]);
+            dp[i]=0;
+            max1[i]=0;
+        }
+        dp[0]=0;
+        max1[0]=0;
+        for(i=1;i<=m;i++)//这里可以省空间
+        {
+            temp=-100000000;
+            for(j=i;j<=n;j++)
             {
-                dp[j] = max(dp[j - 1] + a[j], Maxs[j - 1] + a[j]);
-                Maxs[j - 1] = Max;
-                Max = max(Max,dp[j]);
+                dp[j]=max(dp[j - 1] + a[j],max1[j-1]+a[j]);
+                max1[j-1]=temp;//为i+1的时候做准备
+                temp=max(temp,dp[j]);//保存前j个段数为i时的最大值
             }
         }
-        printf("%d\n",Max);
+        printf("%d\n",temp);
     }
     return 0;
 }

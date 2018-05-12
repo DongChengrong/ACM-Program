@@ -1,0 +1,5 @@
+blue red
+red violet
+cyan blue
+blue magenta
+magenta cyan

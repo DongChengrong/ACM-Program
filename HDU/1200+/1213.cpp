@@ -1,45 +1,36 @@
-#include<stdio.h>
-#include<stdio.h>
+#include <stdio.h>
 
-const int maxn = 1000 + 10;
-int has[maxn], pa[maxn];
+#define N 1100
 
-void init(int n)
-{
-    for(int i = 1; i <= n; i++)
-    {
-        has[i] = 0; pa[i] = i;
-    }
-}
+int pa[N];
 
-int findset(int x)
-{
+int findset(int x) {
     return pa[x] == x ? x : pa[x] = findset(pa[x]);
 }
 
-int main()
-{
+int same(int x, int y) {
+    return findset(x) == findset(y);
+}
+
+void unite(int x, int y) {
+    pa[findset(x)] = findset(y);
+}
+
+int main() {
     int T;
     scanf("%d",&T);
-    while(T--)
-    {
-        int n,m;
-        scanf("%d%d",&n,&m);
-
-        init(n);
+    while (T--) {
+        int m, n;
+        scanf("%d%d",&n, &m);
+        for (int i = 1; i <= n; ++i) pa[i] = i;
         int cnt = n;
-        while(m--)
-        {
-            int x,y;
-            scanf("%d%d",&x,&y);
-            x = findset(x); y = findset(y);
-            if(x != y)
-            {
-                pa[x] = y;
-                cnt--;
-            }
+        while (m--) {
+            int x, y;
+            scanf("%d%d",&x, &y);
+            if (same(x, y)) continue;
+            unite(x, y);
+            cnt--;
         }
-
         printf("%d\n",cnt);
     }
     return 0;
