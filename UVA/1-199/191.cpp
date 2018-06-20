@@ -1,107 +1,75 @@
-#include <bits/stdc++.h>
+#include <stdio.h>
+#include <algorithm>
 using namespace std;
 
-struct Line
-{
-    double x1, y1;
-    double x2, y2;
+struct Vecter {
+    double x, y;
+
+    Vecter() {}
+    Vecter(double a, double b) {
+        x = a; y = b;
+    }
+
+    double operator * (const Vecter &a) const {
+        return (x * a.y) - (y * a.x);
+    }
+
+    Vecter operator - (const Vecter a) const {
+        return Vecter(this->x - a.x, this->y - a.y);
+    }
 };
 
-struct Rectangle {
-    double x1, y1;
-    double x2, y2;
-};
-
-Line l;
-Rectangle rec;
-
-void read() {
-    scanf("%lf%lf%lf%lf%lf%lf%lf%lf", &l.x1, &l.y1, &l.x2, &l.y2, &rec.x1, &rec.y1, &rec.x2, &rec.y2);
-    if (l.x1 > l.x2) {
-        swap(l.x1, l.x2);
-        swap(l.y1, l.y2);
-    }
-    if (rec.x1 > rec.x2) {
-        swap(rec.x1, rec.x2);
-        swap(rec.y1, rec.y2);
-    }
+double direction(Vecter a, Vecter b, Vecter c) {
+    return (a - c) * (b - c);
 }
 
-bool above() {
-    if (min(l.y2,l.y1) > rec.y1)
-        return true;
-    return false;
+bool on_segment(Vecter a, Vecter b, Vecter c) {
+    return (a.x >= min(b.x, c.x) && a.x <= max(b.x, c.x)) &&
+        (a.y >= min(b.y, c.y) && a.y <= max(b.y, c.y));
 }
 
-bool below() {
-    if (max(l.y1,l.y2) < rec.y2)
-        return true;
-    return false;
-}
-
-bool left() {
-    if (max(l.x2, l.x1) < rec.x1)
-        return true;
-    return false;
-}
-
-bool right() {
-    if (min(l.x1, l.x2) > rec.x2)
-        return true;
-    return false;
-}
-
-bool inRec() {
-    if (l.x1 > rec.x1 && l.x2 < rec.x2 && max(l.y1, l.y2) < rec.y1 && min(l.y1, l.y2) > rec.y2)
-        return true;
-    return false;
-}
-
-bool intersecte() {
-    double k, b, y;
-    k = (l.y1 - l.y2) / (l.x1 - l.x2);
-    b = l.y1 - k * l.x1;
-    if (max(l.y1, l.y2) >= rec.y1 && min(l.y1, l.y2) <= rec.y1) {
-        double x = (rec.y1 - b) / k;
-        if (x <= rec.x2 && x >= rec.x1)
-            return true;
-    }
-    if (max(l.y1, l.y2) >= rec.y2 && min(l.y1, l.y2) <= rec.y2) {
-        double x = (rec.y2 - b) / k;
-        if (x >= rec.x1 && x <= rec.x2)
-            return true;
+bool segments_intersect(Vecter a, Vecter b, Vecter c, Vecter d) {
+    double d1 = direction(a, c, d);
+    double d2 = direction(b, c, d);
+    double d3 = direction(c, a, b);
+    double d4 = direction(d, a, b);
+    //printf("%.2f %.2f %.2f %.2f\n", d1, d2, d3, d4);
+    if (d1 * d2 < 0 && d3 * d4 < 0) return true;
+    //puts("1");
+    if (d1 == 0) {
+        if (on_segment(a, d, c)) return true;
+    } if (d2 == 0) {
+        if (on_segment(b, d, c)) return true;
+    } if (d3 == 0) {
+        if (on_segment(c, b, a)) return true;
+    } if (d4 == 0) {
+        if (on_segment(d, b, a)) return true;
     }
     return false;
-}
-
-bool judge() {
-    if (inRec()) return true;
-    if (above()) return true;
-    if (below()) return true;
-    if (left()) return true;
-    if (right()) return true;
 }
 
 int main() {
-    int T;
+    #ifndef ONLINE_JUDGE
     freopen("in.txt", "r", stdin);
     freopen("out.txt", "w", stdout);
-    scanf("%d",&T);
+    #endif // ONLINE_JUDGE
+    int T;
+    scanf("%d", &T);
     while (T--) {
-        read();
-        if (judge()) puts("F");
-        else if (l.y1 == l.y2) {
-            if (l.y1 >= rec.y2) puts("T");
-            else puts("F");
-        } else if (l.x1 == l.x2) {
-            if (max(l.y1, l.y2) >= rec.y1 && min(l.y1, l.y2) <= rec.y1) puts("T");
-            else if (max(l.y1, l.y2) >= rec.y2 && min(l.y1, l.y2) <= rec.y2) puts("T");
-            else puts("F");
-        }
-        else {
-            if (intersecte()) puts("T");
-            else puts("F");
-        }
+        Vecter l, r;
+        Vecter a, b, c, d;
+        double x1, x2, y1, y2;
+        scanf("%lf%lf%lf%lf", &l.x, &l.y, &r.x, &r.y);
+        scanf("%lf%lf%lf%lf", &x1, &y1, &x2, &y2);
+        a = Vecter(min(x1, x2), max(y1, y2));
+        b = Vecter(max(x1, x2), max(y1, y2));
+        c = Vecter(max(x1, x2), min(y1, y2));
+        d = Vecter(min(x1, x2), min(y1, y2));
+        if (on_segment(l, a, c) || on_segment(r, a, c)) { puts("T"); continue; }
+        else if (segments_intersect(l, r, a, b) || segments_intersect(l, r, c, b)
+            || segments_intersect(l, r, d, c) || segments_intersect(l, r, d, a))
+                { puts("T"); continue; }
+        else puts("F");
     }
     return 0;
 }

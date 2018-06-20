@@ -7,7 +7,7 @@
 #include <algorithm>
 using namespace std;
 
-#define N 440
+#define N 44000
 
 int n;
 
