@@ -1,7 +1,8 @@
 #include <stdio.h>
 
 int main() {
-    int a = 3, b = 2, c = 1;
-    printf("%d\n", a > b > c);
+    int x, y;
+    scanf("%d%d", &x, &y);
+    printf("%d %d\n", !(x > 0 || y > 0), !(x > 0 && !(y > 0) ) );
     return 0;
 }
