@@ -1,21 +1,23 @@
 #include<stdio.h>
 #include<string.h>
-const int maxn=100;
+
+#define N 110
+
+char s[N];
 
 int main()
 {
-	char c[maxn];
-	int n,ans,sum;
-	scanf("%d",&n);
-	for(int i=0;i<n;i++)
+	int T;
+	scanf("%d",&T);
+	while (T--)
     {
-        scanf("%s",c);
-        sum=ans=0;
-        for(int j=0;j<strlen(c);j++)
-        {
-            if(c[j]=='O') ans++;
-            else if(c[j]=='X') ans=0;
-            sum+=ans;
+        int i = 0, cnt = 0, sum = 0;
+        scanf("%s", s);
+        while (i < strlen(s)) {
+            if (s[i] == 'O') cnt++;
+            else cnt = 0;
+            sum += cnt;
+            i++;
         }
         printf("%d\n",sum);
     }
