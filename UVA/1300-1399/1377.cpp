@@ -1,94 +1,74 @@
 #include <stdio.h>
 #include <string.h>
-#include <math.h>
 #include <algorithm>
+
 using namespace std;
 
-#define N 1100000
+#define N 220
 #define INF 0x3f3f3f3f
 
-int n,cnt,m,mm;
-int has[N],ans[N],res[N],vis[N],a[N];
+int n, m, maxLen;
+int a[N], b[N], vis[N], scales[N];
 
-void print() {
-    sort(res, res + m);
-    printf("%d\n",m);
-    for (int i = 0; i < m; ++i) {
-        printf("%d%c",res[i], i == m - 1 ? '\n' : ' ');
-    }
-}
-
-void add(int x) {
-    for (int i = 0; i < mm; ++i) {
-        int dif = abs(x - ans[i]);
-        if (has[dif] == -1) continue;
-        if (has[dif] == 0) cnt++;
-        has[dif]++;
-    }
-    vis[x] = 1;
-    ans[mm++] = x;
-}
-
-void del(int x) {
-    for (int i = 0; i < mm; ++i) {
-        int dif = abs(x - ans[i]);
-        if (has[dif] == -1) continue;
-        if (has[dif] == 1) cnt--;
-        has[dif]--;
-    }
-    vis[x] = 0;
-    mm--;
-}
-
-void dfs() {
-    //printf("%d\n",mm);
-    if (cnt == n) {
-        if(m == -1 || (m > mm)) {
-            memcpy(res,ans,sizeof(ans));
-            m = mm;
+void make_scale(int cnt) {
+    for (int i = 0; i < cnt; ++i) {
+        int tmp = b[cnt] - b[i];
+        for (int j = 0; j < n; ++j) {
+            if (tmp == a[j]) {
+                vis[j] = 1;
+            }
         }
-        return;
     }
-    if(cnt > n) return;
-    if(mm > 7) return;
+}
 
+int judge() {
+    for (int i = 0; i < n; ++i) if (!vis[i]) return 0;
+    return 1;
+}
+
+void init() {
+    sort(a, a + n);
+    m = INF, maxLen = a[n - 1];
+    memset(vis, 0, sizeof(vis));
+    b[0] = 0; b[1] = a[0];
+    make_scale(1);
+}
+
+void dfs(int cnt) {
+    int vis2[N];
+    if (cnt > m || b[cnt - 1] > maxLen) return;
+    if (judge()) {
+        if (cnt < m || (cnt == m && maxLen < b[cnt - 1])) {
+            memcpy(scales, b, sizeof(scales));
+            m = cnt; maxLen = b[cnt - 1];
+            return;
+        }
+    }
+
+    memcpy(vis2, vis, sizeof(vis2));
     for (int i = 0; i < n; ++i) {
-        if(!vis[a[i]]) {
-            add(a[i]);
-            dfs();
-            del(a[i]);
+        if (!vis[i]) {
+            for (int j = 0; j < cnt; ++j) {
+                if (b[j] + a[i] > b[cnt - 1]) {
+                    b[cnt] = b[j] + a[i];
+                    make_scale(cnt);
+                    dfs(cnt + 1);
+                    memcpy(vis, vis2, sizeof(vis));
+                }
+            }
         }
     }
 }
 
 int main() {
-    int x, T = 1;
-    while (scanf("%d",&n) == 1 && n) {
-        printf("Case %d:\n",T++);
-
-        int MIN = -1, MAX = INF;
-
-        memset(has, -1, sizeof(has));
-        memset(vis, 0, sizeof(vis));
-
-        for (int i = 0; i < n; ++i) {
-            scanf("%d",&a[i]);
-            has[a[i]] = 0;
-        }
-
-        sort(a, a + n);
-
-        if (n == 1) {
-            printf("1\n0 %d\n",a[0]);
-            continue;
-        }
-
-        mm = 0,m = -1;
-
-        add(0); add(a[0]); add(a[n - 1]);
-
-        dfs();
-        print();
+    int kase = 1;
+    while (scanf("%d", &n) != EOF && n) {
+        for (int i = 0; i < n; ++i) scanf("%d", &a[i]);
+        init();
+        dfs(2);
+        printf("Case %d:\n", kase++);
+        printf("%d\n", m);
+        for (int i = 0; i < m; ++i) printf("%d%c", scales[i] , i == m - 1 ? '\n' : ' ');
     }
     return 0;
 }

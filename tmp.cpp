@@ -1,33 +1,43 @@
+//01±³°ü
 #include <stdio.h>
 #include <string.h>
+#include <algorithm>
 
-#define N 27
-#define M 110000
+using namespace std;
 
-int sum[N][M];
-char s[M];
+#define N 11000
+
+int w[N], c[N], dp[N];
+char s[N];
 
 int main() {
-    int T, n, q;
-    scanf("%d", &T);
-    for (int kase = 1; kase <= T; ++kase) {
-        printf("Case #%d:\n", kase);
-        memset(sum, 0, sizeof(sum));
-        scanf("%d%d", &n, &q);
+    int n, k, cnt;
+    while (scanf("%d%d", &n, &k) != EOF) {
+        int cnt = 0;
         scanf("%s", s);
+        memset(w, 0, sizeof(w));
+        memset(dp, 0, sizeof(dp));
         for (int i = 0; i < n; ++i) {
-            for (int j = 0; j < 26; ++j) sum[j][i + 1] = sum[j][i];
-            sum[s[i] - 'A'][i + 1] += 1;
-        }
-        while (q--) {
-            int l, r, ans;
-            scanf("%d%d", &l, &r);
-            for (int i = 0; i < 26; ++i) {
-                ans = sum[i][r] - sum[i][l - 1];
-                if (ans) break;
+            if (s[i] == '1') {
+                ++cnt;
+                while (i < n && s[i] == '1') { w[cnt]++; ++i; }
             }
-            printf("%d\n", ans);
         }
+        for (int i = 1; i <= cnt; ++i) c[i] = 2;
+        if (s[0] == '1') c[1] = 1;
+        if (s[n - 1] == '1') c[cnt] = 1;
+        if (k == 0) {
+            if (s[0] == '1') printf("%d\n", w[1]);
+            else puts("0");
+            continue;
+        }
+        ++k;
+        for (int i = 1; i <= cnt; ++i) {
+            for (int j = k; j >= c[i]; --j) {
+                dp[j] = max(dp[j], dp[j - c[i]] + w[i]);
+            }
+        }
+        printf("%d\n", dp[k]);
     }
     return 0;
 }
