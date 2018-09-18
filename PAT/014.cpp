@@ -1,4 +1,4 @@
-//ÌâÄ¿Á´½Ó£ºhttps://www.nowcoder.com/pat/6/problem/4048
+﻿//题目链接：https://www.nowcoder.com/pat/6/problem/4048
 #include <stdio.h>
 #include <string.h>
 
