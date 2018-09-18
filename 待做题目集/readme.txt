@@ -1,0 +1,1 @@
+20112012-acmicpc-pacific-northwest-regional-contest-en£ºhttp://codeforces.com/gym/101657/attachments
