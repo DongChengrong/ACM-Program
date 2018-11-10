@@ -1,27 +1,10 @@
 #include <stdio.h>
-#include <string.h>
-#include <algorithm>
-
-using namespace std;
-
-typedef long long ll;
-
-const char s[15] = "0123456789A";
+#include <math.h>
 
 int main() {
-    ll a, b, c;
-    while (scanf("%lld%lld%lld", &a, &b, &c) != EOF) {
-        char res[100];
-        int cnt = 0;
-        if (c == 10) { printf("%lld\n", a + b); continue; }
-        ll sum = a + b;
-        if (sum == 0) { printf("0\n"); continue; }
-        while (sum) {
-            res[cnt++] = s[sum % c]; sum /= c;
-        }
-        res[cnt] = '\0';
-        reverse(res, res + cnt);
-        puts(res);
-    }
+    float k1, k2, a, b;
+    scanf("%f%f%f%f", &k1, &a, &k2, &b);
+    double res = (a * k1 - b * k2) / (a - b);
+    printf("%.2f\n", fabs(res));
     return 0;
 }

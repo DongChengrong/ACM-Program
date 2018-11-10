@@ -1,0 +1,53 @@
+基本用法
+1、新建一个值为123的大整数对象
+BigInteger a=new BigInteger(“123”); //第一种，参数是字符串
+BigInteger a=BigInteger.valueOf(123); //第二种，参数可以是int、long
+
+2、大整数的四则运算
+a. add(b); //a,b均为BigInteger类型，加法
+a.subtract(b); //减 法
+a.divide(b); //除法
+a.multiply(b); //乘法
+
+3、大整数比较大小
+a.equals(b); //如果a、b相等返回true否则返回false
+a.comareTo(b); //a小于b返回-1，等于返回0，大于返回1
+
+4、常用方法
+a.mod(b); //求余
+a.gcd(b); //求最大公约数
+a.max(b); //求最大值
+a.min(b); //求最小值
+
+5、BigInteger中的常数
+BigInteger.ZERO //大整数0
+BigInteger.ONE //大整数1
+BigInteger.TEN //大整数10
+
+6、求大整数的位数
+//先转换成字符串在求字符串的长度
+a.toString().length(); //a的类型为BigInteger
+
+输入框架
+场景一
+不断读入数据直至文件尾，或者说有多组测试用例以EOF为结束标志
+
+    Scanner cin = new Scanner(System.in); //相当于C++中的cin，只不过这个cin需要自己创建
+    while(cin.hasNext()){  //等同于!=EOF
+        BigInteger a;
+        a = cin.nextBigInteger();   //读入一个BigInteger;
+        System.out.println(a);   //输出a并换行
+    }
+场景二
+输入一个整数T，代表有T组测试样例
+
+    Scanner cin = new Scanner(System.in);
+    int T = cin.nextInt();
+    while (T-- > 0) {
+        System.out.println(T);
+    }
+注意
+使用java大数类解决问题时我们需要注意两个方面
+1、不能有包名，也就是说我们要把主类放到默认的包里，如果你的代码里出现形如package cn.gov.test;这样的代码你很有可能会收获到RE
+2、提交的类的类名必须为Main，如果是其他的名字你有可能收获到CE也有可能收获到WA（例如UVA)
+3、不要想当然的认为执行了a.add(b)之后a的值会发生改变，这句代码只是求值而已，相当于a + b，计算了a + b之后a的值会改变吗？当然不会！所以我们要想达到 a = a + b的效果需要写a = a.add(b)

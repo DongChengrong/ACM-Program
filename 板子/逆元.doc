@@ -1,0 +1,77 @@
+逆元的解法
+费马小定理的解法  MOD 是质数才能用
+利用   a ^ (p-1) % MOD === 1 , 那么它的逆元就是     a ^ (p-2)
+#include<stdio.h>
+#include<string.h>
+#include<iostream>
+#include<cmath>
+using namespace std;
+ 
+const int MOD = 1e9+7;
+ 
+ 
+long long quickpow(long long base,long long n){
+	long long ans = 1;
+	while(n){
+		if(n%2 == 1) ans = ans * base % MOD;
+		n /= 2;
+		base = base * base % MOD;
+	}
+	return ans;
+}
+long long n;
+int main(){
+	
+	while(cin >> n){
+		cout << n << " 's inv is "<<endl;
+		//cout << circleRun(n) << endl;
+		cout << " a ^ (p-2) % MOD "<< endl;
+		cout << quickpow(n, MOD-2) << endl;
+		
+	}	
+	return 0;
+}
+
+、利用欧几里德扩展来求 ,
+欧几里德扩展 是用来解决 ?ax + by = gcd(a,b)这样的等式。
+
+这时候取 ?b = MOD, 你可以写成这样 ?ax = gcd(a,b) - by
+
+推导出 a*x % MOD = gcd(a,b) %MOD
+
+所以只要 ?gcd(a,b) % MOD === 1时,就可以使用这条来求a的逆元
+
+但用exgcd求得时候,inv可能是负数， 还需要进行如下操作
+inv = (inv % MOD + MOD) % MOD;
+long long exGcd(long long a, long long b, long long &x0, long long &y0) // a*x0 + b*y0 = gcd(a,b)
+{
+    if(b==0)
+    {
+      x0 = 1;
+      y0 = 0;
+      return a;
+    }
+    long long r = exGcd(b, a % b, x0, y0);
+    long long t = x0;
+	x0 = y0;
+	y0 = t - a / b * y0;
+	return r;
+}
+ 
+long long n;
+int main(){
+	
+	while(cin >> n){
+		cout << n << " 's inv is "<<endl;
+		//cout << circleRun(n) << endl;
+		cout << " a ^ (p-2) % MOD "<< endl;
+		cout << quickpow(n, MOD-2) << endl;
+		
+		cout << " ax + by = gcd(a,b) " << endl;
+		long long inv,y0;
+		exGcd(n ,MOD,inv,y0);
+		inv = (inv % MOD + MOD) % MOD;
+		cout << inv << endl;
+	}	
+	return 0;
+}

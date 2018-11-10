@@ -1,47 +1,34 @@
-#include<stdio.h>
-#include<vector>
-using namespace std;
+#include <stdio.h>
+#include <string.h>
 
-#define N 1000000010
-#define MOD 10000007
+#define N 110
+#define Mod 10000007
 
-typedef long long LL;
+typedef long long ll;
 
-vector<LL> a;
+struct Matrix {
+    ll a[N][N];
+};
 
-void init()
-{
-    a.clear();
-    a.push_back(0); a.push_back(233);
-    LL x = 233;
-    for(int i = 2; i < N; i++)
-        a.push_back((x * 10 + 3) % MOD);
-}
-
-int main()
-{
-    LL n,m;
-    while(scanf("%lld%lld",&n,&m) == 2)
-    {
-        init();
-        for(int i = 0; i <= m; i++)
-            printf("%lld\n ",a[i]);
-        putchar('\n');
-        for(int i = 1; i <= n; i++)
-        {
-            LL x;
-            scanf("%lld",&x);
-            a[0] = x % MOD;
-            for(LL i = 0; i <= m; i++)
-                printf("%lld ",a[i]);
-            putchar('\n');
-            for(LL j = 1; j <= m; j++)
-            {
-                a[j] = (a[j - 1] + a[j]) % MOD;
+Matrix mul(Matrix a, Matrix b) {
+    Matrix c; memset(c.a, 0, sizeof(c.a));
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            for (int k = 0; k < n; ++k) {
+                c.a[i][j] = (c.a[i][j] + a.a[i][k] * b.a[k][j]) % Mod;
             }
         }
-
-        printf("%lld\n",a[m] % MOD);
     }
-    return 0;
+    return c;
+}
+
+Matrix qpow(Matrix a, int b) {
+    Matrix c; memset(c.a, 0, sizeof(c.a));
+    for (int i = 0; i < n; ++i) c.a[i][i] = 1;
+    while (b) {
+        if (b & 1) c = mul(c, a);
+        a = mul(a, a);
+        b = b >> 1;
+    }
+    return c;
 }

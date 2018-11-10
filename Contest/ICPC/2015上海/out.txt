@@ -1,0 +1,6 @@
+Case #1: 26
+Case #2: 10
+Case #3: 29
+Case #4: 14
+Case #5: 64
+Case #6: 26
