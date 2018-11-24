@@ -1,60 +1,59 @@
-#include<cstdio>
-#include<string>
-#include<sstream>
-#include<iostream>
-#include<algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <iostream>
+#include <string>
+#include <sstream>
+
 using namespace std;
 
-const int maxn=10000+10;
-int n,best,best_sum;
-int inorder[maxn],postorder[maxn],lch[maxn],rch[maxn];
+#define N 11000
+#define INF 0x3f3f3f3f
 
-int read(int *a)
-{
-    int x;
-    string line;
-    n=0;
-    if(!getline(cin,line)) return 0;
-    stringstream ss(line);
-    while(ss>>x) a[n++]=x;
-    return n>0;
+int n, root, MIN, leaf;
+int l[N], r[N];
+int a1[N], a2[N];
+
+void convert(string s, int a[]) {
+    n = 0;
+    stringstream ss(s);
+    while (ss >> a[n++]); --n;
 }
 
-int build(int l1,int r1,int l2,int r2)
-{
-    if(l1>r1) return 0;
-    int root=postorder[r2];
-    int pos=l1;
-    while(inorder[pos]!=root) pos++;
-    int cnt=pos-l1;
-    lch[root]=build(l1,pos-1,l2,l2+cnt-1);
-    rch[root]=build(pos+1,r1,l2+cnt,r2-1);
-    return root;
+int build(int *a1, int *a2, int n) {
+    if (n == 0) return 0;
+    int mid = a2[n - 1], i;
+    for (i = 0; i < n; ++i) if (mid == a1[i]) break;
+    l[mid] = build(a1, a2, i); r[mid] = build(a1 + i + 1, a2 + i, n - i - 1);
+    return mid;
 }
 
-void dfs(int root,int sum)
-{
-    sum+=root;
-    if(lch[root]==0 && rch[root]==0)
-    {
-        if(sum<best_sum || (sum==best_sum && root<best))
-        {
-            best=root; best_sum=sum;
+void dfs(int u, int sum) {
+    if (sum > MIN) return;
+    sum += u;
+
+    if (!l[u] && !r[u]) {
+        if (sum == MIN) {
+            if (u < leaf) leaf = u;
+        } else if (sum < MIN) {
+            MIN = sum; leaf = u;
         }
+    } else {
+        if (l[u]) dfs(l[u], sum);
+        if (r[u]) dfs(r[u], sum);
     }
-    if(lch[root]!=0) dfs(lch[root],sum);
-    if(rch[root]!=0) dfs(rch[root],sum);
 }
 
-int main()
-{
-    while(read(inorder))
-    {
-        read(postorder);
-        build(0,n-1,0,n-1);
-        best=best_sum=100000000;
-        dfs(postorder[n-1],0);
-        cout<<best<<endl;
+int main() {
+    string s;
+    while (getline(cin, s)) {
+        convert(s, a1);
+        getline(cin, s);
+        convert(s, a2);
+        build(a1, a2, n);
+        root = a2[n - 1];
+        leaf = MIN = INF;
+        dfs(root, 0);
+        printf("%d\n", leaf);
     }
     return 0;
 }
