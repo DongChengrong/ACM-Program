@@ -29,7 +29,6 @@ void select(int n, int &a, int &b) {
         if (Huffman[i].fa != -1) continue;
         if (i != a && (b == -1 || (Huffman[i].weight < Huffman[b].weight)) ) b = i;
     }
-    //printf("%d %d\n", a, b);
 }
 
 //第一部分：建树

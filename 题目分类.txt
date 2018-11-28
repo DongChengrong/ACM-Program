@@ -1,3 +1,7 @@
+思维题：
+位运算：https://dwacon5th-prelims.contest.atcoder.jp/tasks/dwacon5th_prelims_b，
+动态规划：
+LCS：UVA10192
 组合数学：
 鸽巢原理：hdu1205
 暴力求解法
