@@ -1,13 +1,9 @@
-#include<stdio.h>
-#include<iostream>
-using namespace std;
+#include <stdio.h>
 
-int main()
-{
-    double a,b,c;
-    while(cin >> a >> b >> c)
-    {
-        printf("%.5lf\n", (a * b + b * (b - 1)) / ((a+b) * (a + b - c - 1)));
+int main() {
+    double a, b, c;
+    while (scanf("%lf%lf%lf", &a, &b, &c) != EOF) {
+        printf("%.5f\n", (b * (b - 1) + a * b) / ((a + b) * (a + b - c - 1)));
     }
     return 0;
 }

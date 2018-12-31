@@ -1,3 +1,6 @@
+基本算法
+模拟题：UVA118
+递推：https://ac.nowcoder.com/acm/contest/280/A
 思维题：
 位运算：https://dwacon5th-prelims.contest.atcoder.jp/tasks/dwacon5th_prelims_b，
 动态规划：
@@ -10,3 +13,5 @@ LCS：UVA10192
 树：UVA548、Leetcode100
 高级数据结构
 树状数组：poj2352
+区间信息维护
+差分标记：https://ac.nowcoder.com/acm/contest/297/C
