@@ -1,7 +1,29 @@
-#import<cstdio>
+#include <stdio.h>
+#include <string.h>
+#include <algorithm>
 
-int main()
-{
-    int K,i=scanf("%d",&K)-2,n=K+3>>2<<1,j,k;
-    for(printf("%d",n); ++i<n;)for(j=puts("")-2; ++j<n; printf("%d ",((k=i%2*n+(i+j)%n)>=K?k-n:k)%K+1));
+using namespace std;
+
+#define N 110000
+
+typedef long long ll;
+
+ll a[N], b[N], c[N];
+
+int main() {
+    ll n;
+    ll ans = 0;
+    scanf("%lld", &n);
+    for (int i = 0; i < n; ++i) scanf("%lld", &a[i]);
+    for (int i = 0; i < n; ++i) scanf("%lld", &b[i]);
+    for (int i = 0; i < n; ++i) scanf("%lld", &c[i]);
+    sort(a, a + n); sort(b, b + n); sort(c, c + n);
+    for (int i = 0; i < n; ++i) {
+        ll pos1 = lower_bound(a, a + n, b[i]) - a;
+        ll pos2 = upper_bound(c, c + n, b[i]) - c;
+        pos2 = n - pos2;
+        ans += pos1 * pos2;
+    }
+    printf("%lld\n", ans);
+    return 0;
 }

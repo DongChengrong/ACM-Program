@@ -1,0 +1,1 @@
+ÌâÄ¿Á´½Ó£ºhttps://atcoder.jp/contests/nikkei2019-qual
