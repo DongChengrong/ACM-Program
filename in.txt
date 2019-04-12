@@ -1,9 +1,27 @@
-600 1200         0.06  0.06  0.1    0.12  
-800 800          0.1   0.1   0.115  0.138 
-600 600          0.125 0.125  0.16   0.18  
-400 800          0.125 0.125  0.17   0.19  
-300 600          0.17  0.17  0.22    0.26  
-400 400          0.18  0.18  0.23    0.28  
-300 300          0.25  0.25  0.35    0.45  
-150 600          0.25  0.25  0.35    0.45  
-150 150          0.38  0.38  0.6     0.8   
+#include <iostream>
+#include <vector>
+#include <algorithm>
+using namespace std;
+int main()
+{
+    int n;
+    cin >> n;
+    vector<long long> ans;
+    while (n--)
+    {
+        int a;
+        cin >> a;
+        ans.push_back(a);
+    }
+    sort(ans.begin(), ans.end());
+    int j = ans[0];
+    int i = 1;
+    int cnt =0;
+    while (i < ans.size())
+    {
+        cnt+=ans[i]-ans[i-1]-1;
+        i++;
+    }
+    cout << cnt;
+    return 0;
+}

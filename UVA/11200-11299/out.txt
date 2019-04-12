@@ -1,0 +1,7 @@
+Case 1: possible
+Case 2: possible
+Case 3: possible option:(1,4),(3,2)
+Case 4: possible option:(3,4)
+Case 5: possible
+Case 6: possible option:(1,2),(3,4)
+Case 7: not possible

@@ -1,87 +1,66 @@
-#include<cstdio>
-#include<cstring>
-#include<vector>
-#include<map>
-#include<sstream>
-#include<algorithm>
-#include<iostream>
+#include <iostream>
+#include <vector>
+#include <stdio.h>
+#include <string>
+#include <string.h>
+#include <unordered_map>
+#include <algorithm>
+
 using namespace std;
 
-typedef struct book{
-    int state;
-    string author;
-}book;
+#define N 210000
 
-const int maxn=200;
-char info[maxn];
-vector<string> libs;
-map<string,book> m;
+struct Book{
+    string title, author;
+    bool operator < (const Book &u) const {
+        return author < u.author || (author == u.author && title < u.title);
+    }
+};
 
-bool cmp(string s1,string s2)
-{
-    if(m[s1].author!=m[s2].author) return m[s1].author<m[s2].author;
-    else return s1<s2;
+int vis[N];
+unordered_map<string, int> ma;
+vector<Book> shelves, tmp;
+
+void pre() {
+    string line;
+    memset(vis, 0, sizeof(vis));
+    while (getline(cin, line) && line != "END") {
+        Book book = (Book){ line.substr(0, line.substr(1).find('\"') + 2),
+            line.substr(line.substr(1).find('\"') + 6) };
+        shelves.push_back(book);
+    }
+    sort(shelves.begin(), shelves.end());
+    for (int i = 0; i < shelves.size(); ++i) ma[shelves[i].title] = i;
 }
 
-void add()
-{
-    stringstream ss(info);
-    string title="",author="";
-    string buf;
-    ss>>buf; title+=buf;
-    while(ss>>buf){
-        if(buf=="by") break;
-        title+=" "; title+=buf;
-    }
-    libs.push_back(title);
-    ss>>buf; author+=buf;
-    while(ss>>buf){
-        author+=" "; author+=buf;
-    }
-    book b; b.state=1; b.author=author;
-    m[title]=b;
-}
-
-void operate(){
-    string order,title,buf;
-    stringstream ss(info);
-    ss>>order; if(ss>>buf) title+=buf;
-    while(ss>>buf)
-    {
-        title+=" "; title+=buf;
-    }
-    switch(order[0])
-    {
-        case 'B':{
-            m[title].state=-1;
-            break;
-        }
-        case 'R' :{
-            m[title].state=0;
-            break;
-        }
-        case 'S':{
-            for(int i=0;i<libs.size();i++)
-            {
-                title=libs[i];
-                if(m[title].state!=0) continue;
-                int j;
-                for(j=i-1;j>=0;j--)
-                    if(m[libs[j]].state==1) break;
-                if(j<0) cout<<"Put "<<title<<" first"<<endl;
-                else cout<<"Put "<<title<<" after "<<libs[j]<<endl;
-                m[title].state=1;
+void solve() {
+    string line;
+    while (getline(cin, line) && line != "END") {
+        if (line[0] == 'B') {
+            string title = line.substr(line.find(' ') + 1);
+            int pos = ma[title]; vis[pos] = 1;
+        } else if (line[0] == 'R') {
+            string title = line.substr(line.find(' ') + 1);
+            int pos = ma[title]; tmp.push_back(shelves[pos]);
+        } else if (line[0] == 'S') {
+            sort(tmp.begin(), tmp.end());
+            for (int i = 0; i < tmp.size(); ++i) {
+                int pos = ma[tmp[i].title];
+                int j = pos - 1;
+                while (j >= 0) if (!vis[j]) break; else --j;
+                if (j == -1) cout << "Put " << tmp[i].title <<" first\n";
+                else cout << "Put " << tmp[i].title << " after " << shelves[j].title << '\n';
+                vis[pos] = 0;
             }
-            printf("END\n");
-            break;
+            tmp.clear();
+            cout << "END\n";
         }
     }
 }
 
-int main()
-{
-    while(gets(info) && info[0]!='E' ) add();
-    sort(libs.begin(),libs.end(),cmp);
-    while(gets(info) && info[0]!='E') operate();
+int main() {
+    ios_base::sync_with_stdio(false);
+    pre();
+    solve();
     return 0;
 }
