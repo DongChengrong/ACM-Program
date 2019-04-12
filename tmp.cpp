@@ -1,9 +1,11 @@
 #include <stdio.h>
 
 int main() {
-    int a, b;
-    while ( scanf("%d%d", &a, &b) != EOF) {
-        printf("%d\n", a + b);
+    while (1)
+    {
+        /* code */
+        printf("hello world");
     }
-    return 0;
+    
+    return 0; 
 }
