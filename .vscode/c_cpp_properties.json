@@ -3,7 +3,11 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "D:/code-block/CodeBlocks/MinGW/include/*",
+                "D:\\code-block\\CodeBlocks\\MinGW\\lib\\gcc\\mingw32\\4.9.2\\include/*",
+                "D:\\code-block\\CodeBlocks\\MinGW\\lib\\gcc\\mingw32\\4.9.2\\include\\c++/*",
+                "D:\\code-block\\CodeBlocks\\MinGW\\lib\\gcc\\mingw32\\4.9.2\\include\\c++\\mingw32/*",
+                "D:\\code-block\\CodeBlocks\\MinGW/lib/gcc/mingw32/4.9.2/include/c++/backward/*"
             ],
             "defines": [
                 "_DEBUG",

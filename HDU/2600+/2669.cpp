@@ -1,38 +1,27 @@
-#include<stdio.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <algorithm>
 
-typedef long long LL;
+using namespace std;
 
-void gcdEx(LL a, LL b, LL &d, LL &x, LL &y)
-{
-    if(!b)
-    {
-        d = a;
-        x = 1;
-        y = 0;
-    }
-    else
-    {
-        gcdEx(b, a % b, d, y, x);
-        y -= x * (a / b);
-    }
+typedef long long ll;
+
+void exgcd(ll a, ll b, ll &d, ll &x, ll &y) {
+    if (!b) { d = a; x = 1; y = 0; }
+    else { exgcd(b, a % b, d, y, x); y -= x * (a / b); }
 }
 
-int main()
-{
-    LL a, b, c = 1;
-    while(scanf("%lld%lld",&a,&b) == 2)
-    {
-        LL x,y,g;
-        gcdEx(a,b,g,x,y);
-        if(g != 1) printf("sorry\n");
-        else
-        {
-            int b1 = b / g;
-            int a1 = a / g;
-            while(x < 0) x += b;
-               y = (1 - x * a) / b;
-
-            printf("%lld %lld\n",x,y);
+int main() {
+    ll a, b;
+    while (scanf("%lld%lld", &a, &b) != EOF) {
+        ll x, y, d, c = 1;
+        exgcd(a, b, d, x, y);
+        if (d != 1) { puts("sorry"); continue; }
+        else {
+            ll bb = b / d;
+            x = ((x * c / d) % bb + bb) % bb;
+            y = (1 - a * x) / b;
+            printf("%lld %lld\n", x, y);
         }
     }
     return 0;

@@ -1,38 +1,36 @@
-#include<cstdio>
-#include<string>
-#include<sstream>
-#include<iostream>
-#include<algorithm>
+#include <stdio.h>
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <sstream>
+
 using namespace std;
 
-const int maxn = 50;
-int a[maxn];
+#define N 33
+
 int n;
+int a[N], b[N];
 
-void flip(int p)
-{
-    for(int i = 0;i < p -i; i++)
-        swap(a[i],a[p - i]);
-    printf("%d ",n - p);
-}
-
-int main()
-{
-    string s;
-    while(getline(cin,s))
-    {
+int main() {
+    //ios_base::sync_with_stdio(false);
+    string str;
+    while (getline(cin, str)) {
         n = 0;
-        cout<< s <<"\n";
-        stringstream ss(s);
-        while(ss >> a[n]) n++;
-        for(int i = n -  1; i > 0; i--)
-        {
-            int p = max_element(a,a + i + 1) - a;
-            if(p == i) continue;
-            if(p > 0) flip(p);
-            flip(i);
-        }
-        printf("0\n");
+        cout << str << '\n';
+        stringstream ss(str);
+        while (ss >> a[n]) { b[n] = a[n]; n = n + 1; }
+        sort(b, b + n);
+        for (int i = n - 1; i > 0; --i) {
+            int target = b[i], j;
+            for (j = i; j >= 0; --j) if (a[j] == target) break;
+            if (i == j) continue;
+            if (j != 0) {
+                reverse(a, a + j + 1);
+                printf("%d ", n - j);
+            }
+            reverse(a, a + (i + 1));
+            printf("%d ", n - i);
+        } puts("0");
     }
     return 0;
 }

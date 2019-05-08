@@ -1,1 +1,0 @@
-牛客小白月赛：https://www.nowcoder.com/acm/contest/214#countdown
