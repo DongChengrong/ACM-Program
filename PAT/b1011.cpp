@@ -1,5 +1,6 @@
 /*
-Á´½Ó:https://www.nowcoder.com/pat/6/problem/4077
+problem link: https://www.nowcoder.com/pat/6/problem/4077
+problem link: https://pintia.cn/problem-sets/994805260223102976/problems/994805312417021952
 */
 #include <stdio.h>
 
