@@ -1,44 +1,40 @@
-#include<cstdio>
-#include<vector>
-#include<algorithm>
+#include <stdio.h>
+#include <string.h>
+#include <vector>
+#include <algorithm>
+
 using namespace std;
 
-const int maxn=100000;
-vector<int> v[maxn];
-int n,t,x;
+#define N 110000
 
-int dp(int u)
-{
-    if(v[u].empty()) return 1;
-    int k=v[u].size();
-    int m=(k*t-1)/100+1;
-    vector<int> d;
-    for(int i=0;i<k;i++) d.push_back(dp(v[u][i]));
-    int ans=0;
-    sort(d.begin(),d.end());
-    for(int i=0;i<m;i++) { ans+=d[i]; }
-    return ans;
+int n, t;
+int dp[N];
+vector<int> G[N];
+
+int cmp(int a, int b) {
+    return dp[a] < dp[b];
 }
 
-void clear()
-{
-    for(int i=0;i<=n;i++)
-    {
-        while(!v[i].empty()) v[i].pop_back();
-    }
+int dfs(int pa) {
+    if (dp[pa]) return dp[pa];
+    if (G[pa].empty()) return dp[pa] = 1;   //¹¤ÈË
+    int c = (G[pa].size() * t + 99) / 100;
+    for (int i = 0; i < G[pa].size(); ++i) dfs(G[pa][i]);
+    sort(G[pa].begin(), G[pa].end(), cmp);
+    for (int i = 0; i < c; ++i) dp[pa] += dp[G[pa][i]];
+    return dp[pa];
 }
 
-int main()
-{
-    while(scanf("%d %d",&n,&t)==2 && (n&&t))
-    {
-        clear();
-        for(int i=1;i<=n;i++)
-        {
-            scanf("%d",&x);
-            v[x].push_back(i);
+int main() {
+    while (scanf("%d%d", &n, &t) != EOF && (n + t)) {
+        for (int i = 0; i <= n; ++i) G[i].clear();
+        for (int i = 1; i <= n; ++i) {   //½¨Ê÷
+            int pa;
+            scanf("%d", &pa);
+            G[pa].push_back(i);
         }
-        printf("%d\n",dp(0));
+        memset(dp, 0, sizeof(int) * (n + 100));
+        printf("%d\n", dfs(0));
     }
     return 0;
 }

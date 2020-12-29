@@ -1,3 +1,5 @@
+//题目链接：http://acm.hdu.edu.cn/showproblem.php?pid=3376
+//题目分类：最小费用最大流问题
 #include <stdio.h>
 #include <algorithm>
 #include <string.h>
@@ -84,12 +86,12 @@ bool bellman(int s, int t, int &flow, int &cost) {   //1
     return true;
 }
 
-void maxFlow(int s, int t, int &flow, int &cost) {   //1
+void maxFlow(int s, int t, int &flow, int &cost) {
     flow = cost = 0;
     while (bellman(s, t, flow, cost));
 }
 
-int main() {   //1
+int main() {
     while (scanf("%d", &n) != EOF) {
         int flow, cost;
         init();

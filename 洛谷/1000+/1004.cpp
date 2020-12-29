@@ -1,93 +1,119 @@
+//题目链接：https://www.luogu.org/problem/P1004
+//题目分类：最小费用最大流问题
+//分析：详见hdu3376
 #include <stdio.h>
+#include <algorithm>
 #include <string.h>
 #include <queue>
-#include <vector>
-#include <algorithm>
 
 using namespace std;
 
-#define N 110
 #define INF 0x3f3f3f3f
-
-int n;
-int G[N][N];
+#define N (610 * 610 * 3)
+#define M (N * 2 + 10000)
 
 struct Edge {
-    int from, to, cap, flow;
+    int from, to, next, cap, flow, cost;
 };
 
-struct EdmondsKarp {
-    int n, m, s, t;
-    int a[N], pre[N];
-    vector<Edge> edges;
-    vector<int> G[N];
+int n, m;
+int c1, c2;
+int head[N], vis[N];
+int d[N], p[N], inq[N], a[N];
+Edge edges[M];
 
-    void init(int n) {
-        edges.clear();
-        for (int i = 0; i <= n; ++i) G[i].clear();
-    }
-
-    void addEdge(int u, int v, int cap) {
-        edges.push_back((Edge){u, v, cap, 0});
-        edges.push_back((Edge){v, u, 0, -cap});
-        m = edges.size();
-        G[u].push_back(m - 2);
-        G[v].push_back(m - 1);
-    }
-
-    int maxFlow(int s, int t) {
-        this->s = s; this->t = t;
-        int flow = 0;
-        while (1) {
-            memset(a, 0, sizeof(a));
-            queue<int> q; q.push(s); a[s] = INF;
-            while (!q.empty()) {
-                int u = q.front(); q.pop();
-                for (int i = 0; i < G[u].size(); ++i) {
-                    Edge e = edges[G[u][i]];
-                    if (a[u] && e.cap > e.flow) {
-                        a[e.to] = min(a[u], e.cap - e.flow);
-                        pre[e.to] = G[u][i]; q.push(e.to);
-                    }
-                }
-                if (a[t]) break;
-            }
-            if (!a[t]) break;
-            flow += a[t];
-            for (int u = t; u != s; u = edges[pre[t]].from) {
-                edges[pre[u]].flow += a[t];
-                edges[pre[u] ^ 1].flow -= a[t];
-            }
-        }
-        return flow;
-    }
-};
-
-EdmondsKarp solver;
-
-void id(int x, int y, int flag) {
-    int tmp = x * 13 + y;
-    if (flag) tmp = tmp * 2 + 1;
-    return tmp;
+void init() {
+    m = 0;
+    memset(vis, 0, sizeof(vis));
+    memset(head, -1, sizeof(head));
 }
 
-void read_and_build() {
-    int u, v, w;
-    memset(G, 0, sizeof(G));
-    while (scanf("%d%d%d", &u, &v, &w) != EOF && u) {
-        G[u][v] = max(G[u][v], w);
+//函数参数依次代表源节点、目的节点、容量、花费
+void addEdge(int u, int v, int cap, int cost) {
+    edges[m] = (Edge){u, v, head[u], cap, 0, cost};
+    head[u] = m++;
+    edges[m] = (Edge){v, u, head[v], 0, 0, -cost};
+    head[v] = m++;
+}
+
+//对节点进行编号
+int id(int i, int j) {
+    return (i - 1) * n + j;
+}
+
+//建图
+void build_graph() {
+    int x, y, v;
+    int base = n * n;
+    addEdge(0, 1, 2, 0);
+    addEdge(n * n * 2, n * n * 2 + 1, 2, 0);
+    while (scanf("%d%d%d", &x, &y, &v) != EOF) {
+        if (x == 0 && y == 0 && v == 0) break;
+        if (id(x, y) == 1) c1 = v;
+        if (id(x, y) == n * n) c2 = v;
+        if (id(x,y) == 1 || id(x,y) == n * n) addEdge(id(x, y), id(x, y) + base, 2, v);
+        else addEdge(id(x, y), id(x, y) + base, 1, v);
+        if (x < n) addEdge(id(x, y) + n * n, id(x + 1, y), 1, 0);
+        if (y < n) addEdge(id(x, y) + n * n, id(x, y + 1), 1, 0 );
+        vis[id(x, y)] = 1;
     }
-    for (int i = 0; i <= n + 1; ++i) {
-        for (int j = 0; j <= n; ++j) {
-            solver.addEdge(id(i, j, 0), id(i, j, 1))
+    for (int i = 1; i <= n; ++i) {
+        for (int j = 1; j <= n; ++j) {
+            int x = 0;
+            if (vis[id(i, j)]) continue;
+            if (id(i, j) == 1) c1 = x;
+            if (id(i, j) == n * n) c2 = x;
+            if (id(i,j) == 1 || id(i,j) == n * n) addEdge(id(i, j), id(i, j) + base, 2, x);
+            else addEdge(id(i, j), id(i, j) + base, 1, x);
+            if (i < n) addEdge(id(i, j) + n * n, id(i + 1, j), 1, 0);
+            if (j < n) addEdge(id(i, j) + n * n, id(i, j + 1), 1, 0 );
         }
     }
+}
+
+bool bellman(int s, int t, int &flow, int &cost) {
+    queue<int> q;
+    memset(inq, 0, sizeof(inq));
+    memset(a, 0, sizeof(a));
+    for (int i = 0; i < n * n * 2 + 10; ++i) d[i] = -INF;
+    d[s] = 0; inq[s] = 1; q.push(s); a[s] = INF;
+    while (!q.empty()) {
+        int u = q.front(); q.pop(); inq[u] = 0;
+        for (int i = head[u]; i != -1; i = edges[i].next) {
+            int v = edges[i].to;
+            if (d[v] < d[u] + edges[i].cost && edges[i].cap > edges[i].flow) {
+                d[v] = d[u] + edges[i].cost;
+                a[v] = min(a[u], edges[i].cap - edges[i].flow);
+                p[v] = i;
+                if (!inq[v]) {
+                    inq[v] = 1; q.push(v);
+                }
+            }
+        }
+    }
+    if (a[t] == 0) return false;
+
+    for (int i = t; i != s; i = edges[p[i]].from) {
+        cost += edges[p[i]].cost * a[t];
+        edges[p[i]].flow += a[t];
+        edges[p[i] ^ 1].flow -= a[t];
+    }
+    flow += a[t];
+    return true;
+}
+
+void maxFlow(int s, int t, int &flow, int &cost) {   //1
+    flow = cost = 0;
+    while (bellman(s, t, flow, cost));
 }
 
 int main() {
     while (scanf("%d", &n) != EOF) {
-        read_and_build();
-        printf("%d\n", solver.maxFlow(id(0, 0, 0), id(n + 1, n + 1, 1)));
+        int flow, cost;
+        init();
+        build_graph();
+        maxFlow(0, 2 * n * n + 1, flow, cost);
+        printf("%d\n", cost - c1 - c2);
     }
     return 0;
 }

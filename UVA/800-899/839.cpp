@@ -1,28 +1,27 @@
-#include<cstdio>
-#include<iostream>
+#include <stdio.h>
+#include <algorithm>
+
 using namespace std;
 
-bool cmp(int &W)
-{
-    bool wegiht1,wegiht2;
-    wegiht1=wegiht2=true;
-    int wl,dl,wr,dr;
-    cin>>wl>>dl>>wr>>dr;
-    if(wl==0) wegiht1=cmp(wl);
-    if(wr==0) wegiht2=cmp(wr);
-    W=wl+wr;
-    return (wegiht1 && wegiht2 && wl*dl==wr*dr);
+typedef long long ll;
+
+ll equilibrium() {
+    ll wl, dl, wr, dr;
+    scanf("%lld%lld%lld%lld", &wl, &dl, &wr, &dr);
+    if (wl == 0) wl = equilibrium();
+    if (wr == 0) wr = equilibrium();
+    if (wl == -1 || wr == -1) return -1;
+    if (wl * dl != wr * dr) return -1;
+    return wl + wr;
 }
 
-int main()
-{
-    int Test,W;
-    scanf("%d",&Test);
-    while(Test--)
-    {
-        if(cmp(W)) printf("YES\n");
+int main() {
+    int T;
+    scanf("%d", &T);
+    while (T--) {
+        if (equilibrium() != -1) printf("YES\n");
         else printf("NO\n");
-        if(Test) cout<<endl;
+        if (T) printf("\n");
     }
     return 0;
 }
